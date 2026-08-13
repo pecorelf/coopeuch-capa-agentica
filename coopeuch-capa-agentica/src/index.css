@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: #F2F1EF;
+  color: #141414;
+  font-family: Poppins, Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea { font-family: inherit; }
+*:focus-visible { outline: 2px solid #E4032E; outline-offset: 2px; }
+
+/* --- botones --- */
+.btn { transition: transform .16s ease, box-shadow .16s ease, background .16s ease, opacity .16s ease; }
+.btn:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 5px 16px -6px rgba(28,25,23,.32); }
+.btn:not(:disabled):active { transform: translateY(0); }
+
+/* --- paneles y campos --- */
+.panel { transition: box-shadow .25s ease; }
+.campo { transition: border-color .18s ease, box-shadow .18s ease; }
+.campo:focus { outline: none; border-color: #E4032E !important; box-shadow: 0 0 0 3px rgba(228,3,46,.10); }
+
+/* --- entradas --- */
+.entra { animation: entra .45s cubic-bezier(.22,1,.36,1) both; }
+@keyframes entra { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+
+.modal-fondo { animation: fundido .2s ease both; }
+.modal-caja { animation: sube .28s cubic-bezier(.22,1,.36,1) both; }
+@keyframes fundido { from { opacity: 0 } to { opacity: 1 } }
+@keyframes sube { from { opacity: 0; transform: translateY(16px) scale(.985) } to { opacity: 1; transform: none } }
+
+/* --- agente trabajando --- */
+.pulso-anillo { animation: pulso 1.6s ease-out infinite; }
+@keyframes pulso {
+  0% { transform: scale(.7); opacity: .9 }
+  100% { transform: scale(1.6); opacity: 0 }
+}
+.late { animation: latido 1.5s ease-in-out infinite; }
+@keyframes latido { 0%,100% { transform: scale(1) } 50% { transform: scale(1.14) } }
+
+.puntos-anim::after {
+  content: "";
+  animation: puntos 1.4s steps(4, end) infinite;
+}
+@keyframes puntos {
+  0% { content: "" } 25% { content: "." } 50% { content: ".." } 75% { content: "..." } 100% { content: "" }
+}
+
+.cursor-escribe {
+  display: inline-block; width: 2px; height: 1em; background: #E4032E;
+  margin-left: 2px; vertical-align: -2px; animation: parpadeo 1s steps(2) infinite;
+}
+@keyframes parpadeo { 0%,50% { opacity: 1 } 51%,100% { opacity: 0 } }
+
+/* --- accesibilidad --- */
+@media (prefers-reduced-motion: reduce) {
+  *, .entra, .pulso-anillo, .late, .puntos-anim::after, .cursor-escribe, .modal-caja, .modal-fondo {
+    animation: none !important;
+    transition: none !important;
+  }
+  .btn:hover { transform: none !important; }
+}
+
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #DCD8D3; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #C9C3BC; }
