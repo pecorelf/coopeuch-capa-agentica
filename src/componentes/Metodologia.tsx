@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MARCA as M } from "../datos/marca";
 import { Etiqueta, Chip, Modal } from "./UI";
+import { useSesion } from "../estado/sesion";
 
 /* De dónde salen abre, entiende, confía y actúa. La pregunta aparece siempre en
    las reuniones y merece una respuesta precisa, no una promesa de precisión. */
@@ -13,7 +14,7 @@ export const DIMENSIONES = [
     que: "Probabilidad estimada de que el socio abra el mensaje.",
     entradas: "Largo del asunto, presencia de cifra, urgencia en la redacción, canal elegido y hábito declarado del perfil.",
     base:
-      "Regresión simple sobre reglas de asunto documentadas en benchmarks de email marketing (largo, personalización, presencia de número). No es un modelo entrenado con datos de Coopeuch.",
+      "Regresión simple sobre reglas de asunto documentadas en benchmarks de email marketing (largo, personalización, presencia de número). No es un modelo entrenado con datos propios de la institución.",
     limite: "No predice la apertura real. Ordena qué asunto tiene más probabilidades que otro dentro del mismo segmento.",
   },
   {
@@ -76,10 +77,11 @@ export function MetodologiaDimensiones({ compacto = false }: { compacto?: boolea
 }
 
 function Contenido() {
+  const inst = useSesion((s) => s.inst);
   return (
     <div>
       <div style={{ fontSize: 12.5, color: M.gris, lineHeight: 1.7, marginBottom: 16 }}>
-        Ninguna de las cuatro es un modelo entrenado con datos de Coopeuch: son funciones de reglas que cruzan rasgos
+        Ninguna de las cuatro es un modelo entrenado con datos de {inst.nombre}: son funciones de reglas que cruzan rasgos
         medibles del texto con los atributos declarados de cada perfil. Sirven para comparar versiones entre sí, no para
         pronosticar el resultado de una campaña. La calibración con datos reales de desempeño es parte de la primera
         etapa del proyecto.

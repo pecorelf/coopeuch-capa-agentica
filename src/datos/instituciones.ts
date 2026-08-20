@@ -15,6 +15,8 @@ export interface Institucion {
   sector: "financiero" | "gas";
   /* Nombre de la app del cliente, usado en el copy */
   app: string;
+  /* Dominio, para correos y previsualización del sitio privado */
+  dominio: string;
   logo: string;
   colores: { rojo: string; rojoOsc: string; tinta: string; niebla: string; linea: string };
   /* Vocabulario */
@@ -37,6 +39,7 @@ const REGLAS_CL = "cl-cmf-2026.07";
 export const INSTITUCIONES: Institucion[] = [
   {
     id: "coopeuch",
+    dominio: "coopeuch.cl",
     nombre: "Coopeuch",
     tipo: "cooperativa",
     sector: "financiero",
@@ -58,6 +61,7 @@ export const INSTITUCIONES: Institucion[] = [
   },
   {
     id: "banco-chile",
+    dominio: "bancochile.cl",
     app: "la app Banco de Chile",
     nombre: "Banco de Chile",
     tipo: "banco",
@@ -79,6 +83,7 @@ export const INSTITUCIONES: Institucion[] = [
   },
   {
     id: "santander",
+    dominio: "santander.cl",
     app: "la app Santander",
     nombre: "Santander Chile",
     tipo: "banco",
@@ -100,6 +105,7 @@ export const INSTITUCIONES: Institucion[] = [
   },
   {
     id: "itau",
+    dominio: "itau.cl",
     app: "la app Itaú",
     nombre: "Itaú Chile",
     tipo: "banco",
@@ -121,6 +127,7 @@ export const INSTITUCIONES: Institucion[] = [
   },
   {
     id: "bci",
+    dominio: "bci.cl",
     app: "la app Bci",
     nombre: "Bci",
     tipo: "banco",
@@ -142,6 +149,7 @@ export const INSTITUCIONES: Institucion[] = [
   },
   {
     id: "estado",
+    dominio: "bancoestado.cl",
     app: "la app BancoEstado",
     nombre: "BancoEstado",
     tipo: "banco",
@@ -163,6 +171,7 @@ export const INSTITUCIONES: Institucion[] = [
   },
   {
     id: "falabella",
+    dominio: "bancofalabella.cl",
     app: "la app Banco Falabella",
     nombre: "Banco Falabella",
     tipo: "retail",
@@ -184,6 +193,7 @@ export const INSTITUCIONES: Institucion[] = [
   },
   {
     id: "lipigas",
+    dominio: "lipigas.cl",
     nombre: "Lipigas",
     tipo: "gas",
     sector: "gas",
@@ -212,6 +222,7 @@ export const INSTITUCIONES: Institucion[] = [
   },
   {
     id: "generico",
+    dominio: "institucion.cl",
     app: "la app",
     nombre: "Institución A1",
     tipo: "banco",

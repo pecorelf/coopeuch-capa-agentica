@@ -74,6 +74,7 @@ export const useSesion = create<Estado>((set, get) => ({
     guardar(LLAVE_INST, id);
     aplicarTema(inst);
     sincronizarConfig(inst);
+    reiniciarCaso?.(inst.sector);
     set({ institucionId: id, inst, tema: get().tema + 1 });
   },
 
@@ -126,6 +127,14 @@ let apiConfig: (() => ConfigApi) | null = null;
    importa config, config avisa que existe. */
 export function registrarConfig(fn: () => ConfigApi) {
   apiConfig = fn;
+}
+
+/* store.ts se registra acá para que al cambiar de institución el caso
+   seleccionado vuelva al primero del sector: los IDs de un sector no existen
+   en el otro y la vista quedaba sin caso. */
+let reiniciarCaso: ((sector: string) => void) | null = null;
+export function registrarCasos(fn: (sector: string) => void) {
+  reiniciarCaso = fn;
 }
 
 function sincronizarConfig(inst: Institucion) {

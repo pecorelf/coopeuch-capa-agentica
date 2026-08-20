@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MARCA as M, SET_REGLAS } from "../datos/marca";
-import { CASOS } from "../datos/casos";
+import { CASOS, casosDelSector } from "../datos/casos";
 import { useApp, firma } from "../estado/store";
 import { useSesion } from "../estado/sesion";
 import { Panel, Chip, Fila, Etiqueta, Metrica, Boton } from "../componentes/UI";
@@ -19,7 +19,7 @@ export default function Resultado() {
   const inst = useSesion((s) => s.inst);
   const [correo, setCorreo] = useState<Destino | null>(null);
   const [enviados, setEnviados] = useState<Record<string, string>>({});
-  const c = CASOS.find((x) => x.id === casoId)!;
+  const c = casosDelSector(inst.sector).find((x) => x.id === casoId) || casosDelSector(inst.sector)[0];
   const modulos = biblioteca.filter((b) => b.tipo === "Módulo HTML");
   const reglasTono = biblioteca.filter((b) => b.tipo === "Regla de tono");
   const totalUsos = biblioteca.reduce((a, b) => a + (b.usos || 0), 0);
@@ -178,7 +178,7 @@ export default function Resultado() {
       <div className="grid gap-4 xl:grid-cols-2 items-start">
         <Panel titulo="Mediciones pendientes" acento={M.alerta}>
           <div style={{ fontSize: 12.5, color: M.gris, lineHeight: 1.65, marginBottom: 12 }}>
-            El documento planteó cifras de referencia sin datos de Coopeuch. Estas son las que se levantarían primero
+            El documento planteó cifras de referencia sin datos de {inst.nombre}. Estas son las que se levantarían primero
             para reemplazar la hipótesis por evidencia.
           </div>
           <div className="grid gap-2 md:grid-cols-2">
@@ -207,7 +207,7 @@ export default function Resultado() {
           canales: canalesCorrida,
           panelN: esLibre ? libre!.ids.length : c.panelSegmento.length,
           imagen,
-          dominio: inst.id === "generico" ? "institucion" : inst.id.replace(/-/g, ""),
+          dominio: inst.dominio.replace(/\.cl$/, ""),
           institucion: inst.nombre,
         }}
         onCerrar={() => setCorreo(null)}
@@ -216,7 +216,7 @@ export default function Resultado() {
 
       <Panel titulo="Hallazgos del panel por caso" acento={M.ok}>
           <div className="grid gap-2 md:grid-cols-3">
-            {CASOS.map((x) => {
+            {casosDelSector(inst.sector).map((x) => {
               const h = x.aprendizaje.find((a) => a.tipo === "Hallazgo de panel");
               return (
                 <div key={x.id} style={{ border: `1px solid ${M.linea}`, padding: 12 }}>

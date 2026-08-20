@@ -359,6 +359,17 @@ La demostración soporta dos sectores, y la diferencia no es cosmética:
 Presets: Coopeuch, Banco de Chile, Santander, Itaú, Bci, BancoEstado, Banco Falabella, **Lipigas** e
 Institución A1 (neutro).
 
+### Casos base por sector
+
+Cada sector trae sus propios casos base. En gas son tres campañas construidas sobre hechos públicos
+de la industria del GLP:
+
+| Caso | Qué muestra |
+|---|---|
+| Convenio municipal sin usar | Compliance bloquea «el gas más barato»; el panel muestra que la urgencia comercial se lee como estafa en clientes mayores |
+| Anticipar la carga de invierno | El dato de consumo propio del cliente convierte más que la advertencia genérica; hay que aclarar que el alza es de consumo y no de precio |
+| Cliente que dejó de pedir | El descuento sin reconocer la incidencia previa resta credibilidad: la campaña se separa en dos audiencias con piezas distintas |
+
 ### Lipigas
 
 El preset está construido con información pública de la compañía y de la industria: alrededor de

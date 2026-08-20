@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { MARCA as M, SET_REGLAS } from "../datos/marca";
-import { CASOS } from "../datos/casos";
+import { CASOS, casosDelSector } from "../datos/casos";
 import { regla } from "../datos/reglas";
 import { persona } from "../datos/personas";
 import { useApp, ETAPAS } from "../estado/store";
@@ -22,8 +22,9 @@ const COLOR_VAR: Record<string, string> = { A: "#B9B3AE", B: "#E4032E", C: "#1F5
 
 export default function Casos() {
   const { casoId, elegirCaso, etapa, reproduciendo, alternar, avanzar, retroceder, reiniciar, velocidad, setVelocidad, log } = useApp();
-  const c = CASOS.find((x) => x.id === casoId)!;
   const inst = useSesion((s) => s.inst);
+  const CASOS_SECTOR = casosDelSector(inst.sector);
+  const c = CASOS_SECTOR.find((x) => x.id === casoId) || CASOS_SECTOR[0];
   const [t, setT] = useState(0);
   const [verTraza, setVerTraza] = useState(false);
   const ref = useRef(0);
@@ -48,7 +49,16 @@ export default function Casos() {
 
   return (
     <div className="grid gap-4">
-      {inst.id !== "coopeuch" && (
+      {inst.sector === "gas" ? (
+        <Panel titulo="Casos del sector gas" acento={M.ok}>
+          <div style={{ fontSize: 12.5, color: M.gris, lineHeight: 1.65, maxWidth: 940 }}>
+            Tres campañas construidas sobre hechos públicos de la industria del GLP y de {inst.nombre}: convenios
+            municipales, estacionalidad del consumo en granel y fuga silenciosa de clientes de cilindro. Aplican el set
+            normativo del sector —SEC, SERNAC, bases de promoción y canal de emergencia— y se prueban con el panel de
+            clientes de gas.
+          </div>
+        </Panel>
+      ) : inst.id !== "coopeuch" ? (
         <Panel titulo="Casos guionados sobre Coopeuch" acento={M.alerta}>
           <div style={{ fontSize: 12.5, color: M.gris, lineHeight: 1.65, maxWidth: 900 }}>
             La demostración está configurada para <b>{inst.nombre}</b>, pero estos tres casos están construidos sobre
@@ -56,11 +66,11 @@ export default function Casos() {
             sus propios casos. El Caso custom, las audiencias y el set de reglas sí operan con la marca activa.
           </div>
         </Panel>
-      )}
+      ) : null}
 
       {/* Selector */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-        {CASOS.map((x, i) => {
+        {CASOS_SECTOR.map((x, i) => {
           const activo = x.id === casoId;
           return (
             <button

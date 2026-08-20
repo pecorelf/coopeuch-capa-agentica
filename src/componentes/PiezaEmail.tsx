@@ -2,6 +2,7 @@ import React from "react";
 import { MARCA as M } from "../datos/marca";
 import { Etiqueta, Logo } from "./UI";
 import { medirPieza } from "../lib/legibilidad";
+import { useSesion } from "../estado/sesion";
 import type { Pieza } from "../lib/tipos";
 
 export function PiezaEmail({
@@ -9,6 +10,7 @@ export function PiezaEmail({
 }: { pieza: Pieza; version?: string; imagen?: string; compacta?: boolean; mostrarLegibilidad?: boolean }) {
   if (!pieza) return null;
   const l = medirPieza(pieza).total;
+  const inst = useSesion.getState().inst;
 
   return (
     <div style={{ border: `1px solid ${M.linea}`, background: "#fff", width: "100%", borderRadius: 14, overflow: "hidden" }}>
@@ -61,8 +63,10 @@ export function PiezaEmail({
         )}
 
         <div style={{ marginTop: 14, paddingTop: 9, borderTop: `1px solid ${M.linea}`, fontSize: 9, color: M.gris, lineHeight: 1.6 }}>
-          Coopeuch nunca solicita claves ni datos personales por correo, WhatsApp o teléfono. · Infórmese sobre la
-          garantía estatal de los depósitos en su cooperativa o en www.cmfchile.cl
+          {inst.nombre} nunca solicita claves ni datos personales por correo, WhatsApp o teléfono.
+          {inst.sector === "gas"
+            ? " · Ante emergencia de gas, corte el suministro y llame al 600 600 9200."
+            : " · Infórmese sobre la garantía estatal de los depósitos en su institución o en www.cmfchile.cl"}
         </div>
       </div>
     </div>

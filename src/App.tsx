@@ -46,7 +46,7 @@ export default function App() {
             <div>
               <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em" }}>Capa Agéntica de Marketing</div>
               <div className="font-mono" style={{ fontSize: 9.5, color: M.gris, letterSpacing: "0.1em" }}>
-                DEMO 100% FUNCIONAL · DATA NO REAL · SIN CONEXIÓN A SISTEMAS COOPEUCH
+                DEMO 100% FUNCIONAL · DATA NO REAL · SIN CONEXIÓN A SISTEMAS {inst.nombre.toUpperCase()}
               </div>
             </div>
           </div>

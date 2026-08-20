@@ -196,7 +196,7 @@ export default function Metodo() {
       <Panel titulo="Alcance de esta demo">
         <div style={{ fontSize: 12.5, color: M.gris, lineHeight: 1.7, maxWidth: 1000 }}>
           Es una demo 100% funcional construida en ambiente Deloitte, con data no real y sin conexión a sistemas de
-          Coopeuch. Está desarrollada en base a investigación interna e hipótesis: las reglas de compliance, los módulos
+          {inst.nombre}. Está desarrollada en base a investigación interna e hipótesis: las reglas de compliance, los módulos
           y los perfiles del panel son una aproximación de trabajo que se reemplaza por los datos reales de la
           cooperativa en la primera etapa. Los tres casos están guionados para que la presentación sea reproducible; el
           caso libre genera en vivo.

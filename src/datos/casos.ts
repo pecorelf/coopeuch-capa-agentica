@@ -1,5 +1,6 @@
 import type { Caso, Reaccion } from "../lib/tipos";
 import { ILU_TRANSFERENCIA, ILU_CREDITO, ILU_REMANENTE } from "./ilustraciones";
+import { CASOS_GAS } from "./casos-gas";
 
 /* Tres campañas construidas sobre hechos publicos y verificables de Coopeuch al
    28-07-2026. Cada caso declara su fuente. El guion es fijo a proposito: la
@@ -545,4 +546,14 @@ export const CASOS: Caso[] = [
   },
 ];
 
-export const caso = (id: string) => CASOS.find((c) => c.id === id)!;
+export const caso = (id: string) => todosLosCasos().find((c) => c.id === id) || CASOS[0];
+
+/* Los casos base dependen del sector: una campaña de Remanente no se traduce a
+   una distribuidora de gas. Cada sector trae los suyos. */
+export function casosDelSector(sector?: string): Caso[] {
+  return sector === "gas" ? CASOS_GAS : CASOS;
+}
+
+function todosLosCasos(): Caso[] {
+  return [...CASOS, ...CASOS_GAS];
+}

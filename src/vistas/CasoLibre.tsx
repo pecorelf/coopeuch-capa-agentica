@@ -843,7 +843,7 @@ export default function CasoLibre() {
           correcciones: (variantes || []).flatMap((v) => v.correcciones.map((c) => `${v.id} · ${c}`)),
           panelN: ids.length,
           imagen,
-          dominio: inst.id === "generico" ? "institucion" : inst.id.replace(/-/g, ""),
+          dominio: inst.dominio.replace(/\.cl$/, ""),
           institucion: inst.nombre,
         }}
         onCerrar={() => setCorreo(null)}

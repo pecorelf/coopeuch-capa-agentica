@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MARCA as M } from "../datos/marca";
 import { PiezaEmail } from "./PiezaEmail";
 import { Etiqueta } from "./UI";
+import { useSesion } from "../estado/sesion";
 import type { Pieza } from "../lib/tipos";
 import type { Adaptaciones } from "../lib/motorLocal";
 
@@ -27,16 +28,17 @@ function Telefono({ children, etiqueta }: { children: React.ReactNode; etiqueta?
 }
 
 export function VistaWhatsApp({ texto }: { texto: string }) {
+  const inst = useSesion.getState().inst;
   const partes = String(texto || "").split("\n").filter((x) => x !== undefined);
   return (
     <Telefono etiqueta="WHATSAPP · CUENTA DE EMPRESA VERIFICADA">
       <div style={{ background: "#075E54", padding: "9px 12px", display: "flex", alignItems: "center", gap: 9 }}>
         <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <span style={{ color: M.rojo, fontSize: 13, fontWeight: 700 }}>C</span>
+          <span style={{ color: M.rojo, fontSize: 13, fontWeight: 700 }}>{inst.nombre.charAt(0)}</span>
         </div>
         <div>
           <div style={{ color: "#fff", fontSize: 12.5, fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
-            Coopeuch <span style={{ fontSize: 10 }}>✓</span>
+            {inst.nombre} <span style={{ fontSize: 10 }}>✓</span>
           </div>
           <div style={{ color: "#B7D6D1", fontSize: 9.5 }}>cuenta de empresa</div>
         </div>
@@ -58,12 +60,12 @@ export function VistaWhatsApp({ texto }: { texto: string }) {
         </div>
 
         <div style={{ background: "#fff", borderRadius: 8, marginTop: 6, padding: "8px 0", maxWidth: 232, textAlign: "center", boxShadow: "0 1px 1px rgba(0,0,0,.08)" }}>
-          <span style={{ fontSize: 12.5, color: "#027EB5", fontWeight: 600 }}>Ver en AppCoopeuch</span>
+          <span style={{ fontSize: 12.5, color: "#027EB5", fontWeight: 600 }}>Ver en {inst.app}</span>
         </div>
 
         <div style={{ marginTop: 10, textAlign: "center" }}>
           <span style={{ fontSize: 9.5, color: "#667781", background: "#FCF4CB", padding: "4px 8px", borderRadius: 6, display: "inline-block", lineHeight: 1.4 }}>
-            Coopeuch nunca pide claves por este medio
+            {inst.nombre} nunca pide claves por este medio
           </span>
         </div>
       </div>
@@ -72,6 +74,7 @@ export function VistaWhatsApp({ texto }: { texto: string }) {
 }
 
 export function VistaPush({ titulo, cuerpo }: { titulo: string; cuerpo: string }) {
+  const inst = useSesion.getState().inst;
   return (
     <Telefono etiqueta="PUSH · PANTALLA BLOQUEADA">
       <div style={{ background: "linear-gradient(160deg,#2B3A4A,#6B4A52)", minHeight: 380, padding: "26px 12px" }}>
@@ -83,7 +86,7 @@ export function VistaPush({ titulo, cuerpo }: { titulo: string; cuerpo: string }
         <div style={{ background: "rgba(255,255,255,.92)", borderRadius: 16, padding: "10px 12px", backdropFilter: "blur(8px)" }}>
           <div className="flex items-center gap-2" style={{ marginBottom: 5 }}>
             <div style={{ width: 16, height: 16, background: M.rojo, borderRadius: 4 }} />
-            <span style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: ".05em" }}>AppCoopeuch</span>
+            <span style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: ".05em" }}>{inst.app}</span>
             <span style={{ fontSize: 10, color: "#888", marginLeft: "auto" }}>ahora</span>
           </div>
           <div style={{ fontSize: 12.5, fontWeight: 700, lineHeight: 1.35, marginBottom: 2 }}>{titulo}</div>
@@ -95,6 +98,7 @@ export function VistaPush({ titulo, cuerpo }: { titulo: string; cuerpo: string }
 }
 
 export function VistaWeb({ titulo, bajada, cta, imagen }: { titulo: string; bajada: string; cta: string; imagen?: string }) {
+  const inst = useSesion.getState().inst;
   return (
     <div style={{ border: `1px solid ${M.linea}`, background: "#fff", borderRadius: 14, overflow: "hidden" }}>
       <div className="flex items-center gap-2 px-3 py-2" style={{ background: M.niebla, borderBottom: `1px solid ${M.linea}` }}>
@@ -102,13 +106,13 @@ export function VistaWeb({ titulo, bajada, cta, imagen }: { titulo: string; baja
           {["#E4032E", "#DCD8D3", "#DCD8D3"].map((c, i) => <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: c }} />)}
         </div>
         <div className="font-mono" style={{ fontSize: 9.5, color: M.gris, background: "#fff", padding: "3px 10px", border: `1px solid ${M.linea}`, flex: 1 }}>
-          coopeuch.cl / mi-coopeuch
+          {inst.dominio || "institucion.cl"} / mi-cuenta
         </div>
       </div>
 
       <div style={{ padding: "12px 14px", borderBottom: `1px solid ${M.linea}`, display: "flex", alignItems: "center", gap: 10 }}>
         <div style={{ width: 8, height: 20, background: M.rojo }} />
-        <span style={{ fontSize: 12.5, fontWeight: 600 }}>Mi Coopeuch</span>
+        <span style={{ fontSize: 12.5, fontWeight: 600 }}>Mi {inst.nombre}</span>
         <span className="font-mono" style={{ fontSize: 10, color: M.gris, marginLeft: "auto" }}>Hola, Rosa</span>
       </div>
 
@@ -124,7 +128,7 @@ export function VistaWeb({ titulo, bajada, cta, imagen }: { titulo: string; baja
         </div>
 
         <div className="grid grid-cols-3 gap-3 mt-4">
-          {["Saldo Cuenta Vista", "Cuotas de participación", "Mis productos"].map((x) => (
+          {(inst.sector === "gas" ? ["Mis pedidos", "Saldo Lipipuntos", "Mis boletas"] : ["Saldo Cuenta Vista", "Cuotas de participación", "Mis productos"]).map((x) => (
             <div key={x} style={{ border: `1px solid ${M.linea}`, padding: 12 }}>
               <div style={{ fontSize: 11, color: M.gris }}>{x}</div>
               <div style={{ height: 6, background: M.niebla, marginTop: 8 }} />

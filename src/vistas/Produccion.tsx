@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { MARCA as M } from "../datos/marca";
 import { FORMATOS, PLATAFORMAS, SELECCION_BASE, esfuerzoManual, formato as buscarFormato, type Formato } from "../datos/formatos";
 import { ESQUEMAS, adaptar, esquemaSugerido, esquema as buscarEsquema } from "../lib/layouts";
-import { CASOS } from "../datos/casos";
+import { CASOS, casosDelSector } from "../datos/casos";
 import { PERSONAS as PERSONAS_BASE, persona } from "../datos/personas";
 import { adaptarPersonas } from "../datos/instituciones";
 import { useSesion } from "../estado/sesion";
@@ -33,7 +33,7 @@ export default function Produccion() {
   const { casoId, libre, ultima } = useApp();
   const PERSONAS = adaptarPersonas(PERSONAS_BASE, inst);
 
-  const caso = CASOS.find((x) => x.id === casoId)!;
+  const caso = casosDelSector(inst.sector).find((x) => x.id === casoId) || casosDelSector(inst.sector)[0];
   const esLibre = ultima === "libre" && libre;
   const piezaBase: Pieza = esLibre ? libre!.pieza : caso.piezaFinal;
   const imagen = esLibre ? libre!.imagen : caso.imagenFinal;
