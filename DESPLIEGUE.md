@@ -186,3 +186,12 @@ variable `ANTHROPIC_API_KEY`.
 
 Para abrir la demostración ya configurada por cliente:
 `https://capa-agentica-marketing.vercel.app/?institucion=santander`
+
+## Despliegue automático desde GitHub
+
+El repositorio `pecorelf/coopeuch-capa-agentica` está conectado al proyecto en Vercel. Cada push a
+la rama `master` genera un despliegue de producción; las demás ramas generan previews.
+
+Nota sobre la conexión inicial: Vercel no despliega commits anteriores a la conexión. Si acabas de
+conectar el repositorio y el último despliegue sigue apareciendo como `vercel deploy` (CLI), hay
+que empujar un commit nuevo o usar **Redeploy** en la pestaña Deployments.
