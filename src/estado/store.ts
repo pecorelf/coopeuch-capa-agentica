@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import { CASOS } from "../datos/casos";
 import { BIBLIOTECA_INICIAL } from "../datos/biblioteca";
-import { casosDelSector } from "../datos/casos";
-import { registrarCasos } from "./sesion";
+
 import type { Caso, Modulo } from "../lib/tipos";
 
 export type Vista = "config" | "casos" | "libre" | "produccion" | "audiencias" | "bitacora" | "admin";
@@ -184,10 +183,3 @@ export const useApp = create<Estado>((set, get) => ({
     });
   },
 }));
-
-
-/* Al cambiar de institución, el caso vuelve al primero del sector. */
-registrarCasos((sector) => {
-  const primero = casosDelSector(sector)[0];
-  if (primero) useApp.setState({ casoId: primero.id, etapa: 0, log: [], reproduciendo: false, ultima: "caso" });
-});

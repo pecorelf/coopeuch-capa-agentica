@@ -1,12 +1,13 @@
 import type { Pieza } from "./tipos";
 import { medirPieza } from "./legibilidad";
-import { SET_REGLAS } from "../datos/marca";
+import { MARCA, SET_REGLAS } from "../datos/marca";
 
 /* Exportadores del paquete. El HTML es un correo real, con la ilustración
    vectorial embebida: se abre en el navegador y se puede subir tal cual a
    Marketing Cloud como asset. */
 
-export function piezaAHtml(p: Pieza, imagen?: string, nombre = "Coopeuch") {
+export function piezaAHtml(p: Pieza, imagen?: string, nombre = MARCA.nombre) {
+  const acento = MARCA.rojo;
   const cuerpo = (p.cuerpo || [])
     .map((x) => `<p style="margin:0 0 14px;font:400 15px/1.7 Arial,Helvetica,sans-serif;color:#141414">${escapar(x)}</p>`)
     .join("\n        ");
@@ -26,10 +27,10 @@ export function piezaAHtml(p: Pieza, imagen?: string, nombre = "Coopeuch") {
     <tr>
       <td align="center" style="padding:24px 12px">
         <table role="presentation" width="620" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%;background:#ffffff;border:1px solid #DCD8D3">
-          <tr><td style="height:4px;background:#E4032E;font-size:0;line-height:0">&nbsp;</td></tr>
+          <tr><td style="height:4px;background:${acento};font-size:0;line-height:0">&nbsp;</td></tr>
           <tr>
             <td style="padding:22px 26px 8px">
-              <div style="font:700 15px/1 Arial,Helvetica,sans-serif;color:#E4032E;letter-spacing:.04em">${escapar(nombre).toUpperCase()}</div>
+              <div style="font:700 15px/1 Arial,Helvetica,sans-serif;color:${acento};letter-spacing:.04em">${escapar(nombre).toUpperCase()}</div>
             </td>
           </tr>
           ${imagen ? `<tr><td style="padding:8px 26px">${imagen}</td></tr>` : ""}
@@ -38,7 +39,7 @@ export function piezaAHtml(p: Pieza, imagen?: string, nombre = "Coopeuch") {
               <h1 style="margin:0 0 14px;font:600 24px/1.28 Arial,Helvetica,sans-serif;color:#141414">${escapar(p.titular)}</h1>
               ${cuerpo}
               <table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px 0 4px">
-                <tr><td style="background:#E4032E">
+                <tr><td style="background:${acento}">
                   <a href="#" style="display:inline-block;padding:13px 26px;font:700 14px/1 Arial,Helvetica,sans-serif;color:#ffffff;text-decoration:none">${escapar(p.cta)}</a>
                 </td></tr>
               </table>
@@ -48,14 +49,16 @@ export function piezaAHtml(p: Pieza, imagen?: string, nombre = "Coopeuch") {
           <tr>
             <td style="padding:18px 26px 24px">
               <div style="border-top:1px solid #DCD8D3;padding-top:12px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#6B6663">
-                Coopeuch nunca solicita claves ni datos personales por correo, WhatsApp o teléfono.<br>
-                Infórmese sobre la garantía estatal de los depósitos en su cooperativa o en www.cmfchile.cl
+                ${escapar(nombre)} nunca solicita claves ni datos personales por correo, WhatsApp o teléfono.<br>
+                ${MARCA.sector === "gas"
+                  ? "Ante emergencia de gas, corte el suministro y llame al 600 600 9200."
+                  : "Infórmese sobre la garantía estatal de los depósitos en su institución o en www.cmfchile.cl"}
               </div>
             </td>
           </tr>
         </table>
         <div style="margin-top:12px;font:400 10px/1.5 Arial,Helvetica,sans-serif;color:#6B6663">
-          Demo Deloitte Digital · data no real · sin conexión a sistemas Coopeuch
+          Demo Deloitte Digital · data no real · sin conexión a sistemas ${escapar(nombre)}
         </div>
       </td>
     </tr>

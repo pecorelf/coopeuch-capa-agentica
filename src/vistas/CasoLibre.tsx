@@ -32,7 +32,9 @@ const tonosDe = (inst: { tipo: string }) =>
     : ["Cercano y claro", "Institucional sobrio", "Directo y breve"];
 
 const PASOS = ["Estrategia", "Requisitos", "Variantes A/B/C", "Adaptación por canal", "Panel", "Paquete"];
-const COLOR_VAR: Record<string, string> = { A: "#B9B3AE", B: "#E4032E", C: "#1F5F8B" };
+/* La variante B toma el color de la marca activa; las otras dos son neutros
+   estables para que la comparación se lea igual en cualquier institución. */
+const colorVar = (): Record<string, string> => ({ A: "#B9B3AE", B: M.rojo, C: "#1F5F8B" });
 
 const ENFOQUES: { id: "A" | "B" | "C"; enfoque: Enfoque; nombre: string; hipotesis: string }[] = [
   { id: "A", enfoque: "directa", nombre: "Directa", hipotesis: "Ir al grano gana atención en una bandeja saturada." },
@@ -40,8 +42,6 @@ const ENFOQUES: { id: "A" | "B" | "C"; enfoque: Enfoque; nombre: string; hipotes
   { id: "C", enfoque: "cooperativa", nombre: "Pertenencia", hipotesis: "Apelar al vínculo con la institución mueve más que cualquier cifra." },
 ];
 
-const CONTEXTO_FIJO =
-  "Coopeuch es la mayor cooperativa de ahorro y crédito de Chile: más de 1.200.000 socios, 81 oficinas de Arica a Punta Arenas, supervisada por la CMF. Los socios son copropietarios y reciben Remanente anual (en 2026 se distribuyeron $72.178 millones entre 1.284.000 socios). Se dice socio, nunca cliente. Desde julio de 2026 las transferencias electrónicas no tienen costo.";
 
 const reglaVoz = (persona: string, plural: string) =>
   `MUY IMPORTANTE: escribes el mensaje que recibe el ${persona}, no el encargo interno. Nunca uses formulaciones como «invitar a los ${plural} a…», «comunicar que…» o «informar sobre…»: eso es la instrucción, no la pieza. Habla directo a la persona que abre el mensaje.`;
@@ -559,10 +559,10 @@ export default function CasoLibre() {
                 <button key={v.id} onClick={() => setActiva(v.id)} className="text-left entra"
                   style={{
                     background: "#fff", border: `1px solid ${sel ? M.rojo : M.linea}`,
-                    borderTop: `3px solid ${COLOR_VAR[v.id]}`, padding: 13, cursor: "pointer",
+                    borderTop: `3px solid ${colorVar()[v.id]}`, padding: 13, cursor: "pointer",
                   }}>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-mono" style={{ fontSize: 13, fontWeight: 700, color: COLOR_VAR[v.id] }}>{v.id}</span>
+                    <span className="font-mono" style={{ fontSize: 13, fontWeight: 700, color: colorVar()[v.id] }}>{v.id}</span>
                     <span style={{ fontSize: 13.5, fontWeight: 600 }}>{v.nombre}</span>
                     <Chip color={M.ok}>conforme</Chip>
                     {ganadora === v.id && reacciones && (
@@ -714,7 +714,7 @@ export default function CasoLibre() {
               <div className="flex gap-2 items-center" style={{ borderBottom: `1px solid ${M.linea}`, paddingBottom: 5 }}>
                 <span style={{ minWidth: 190 }} />
                 {["A", "B", "C"].map((id) => (
-                  <span key={id} className="font-mono text-center" style={{ fontSize: 10, color: COLOR_VAR[id], width: 76, fontWeight: 700 }}>
+                  <span key={id} className="font-mono text-center" style={{ fontSize: 10, color: colorVar()[id], width: 76, fontWeight: 700 }}>
                     {id} {variantes?.find((v) => v.id === id)?.nombre}
                   </span>
                 ))}
@@ -731,7 +731,7 @@ export default function CasoLibre() {
                     {vals.map((v, i) => (
                       <span key={i} className="text-center" style={{ width: 76 }}>
                         <span style={{ fontSize: 13, fontWeight: v === max ? 700 : 400, color: v === max ? M.tinta : M.gris }}>{v}%</span>
-                        <Barra valor={v} color={v === max ? COLOR_VAR[["A", "B", "C"][i]] : M.linea} alto={3} />
+                        <Barra valor={v} color={v === max ? colorVar()[["A", "B", "C"][i]] : M.linea} alto={3} />
                       </span>
                     ))}
                   </div>

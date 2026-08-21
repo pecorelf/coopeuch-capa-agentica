@@ -110,7 +110,7 @@ export const BANDAS = [
 
 /* Objetivo de la cooperativa: una base de más de 1,2 millones de socios de
    Arica a Punta Arenas, con fuerte peso de pensionados y convenios. */
-export const OBJETIVO = { min: 65, max: 85, etiqueta: "Objetivo Coopeuch · bastante fácil" };
+export const OBJETIVO = { min: 65, max: 85, etiqueta: "Objetivo · bastante fácil" };
 
 export function medirPieza(p: { asunto?: string; titular?: string; cuerpo?: string[]; cta?: string; legal?: string }) {
   const cuerpo = medir([p.asunto, p.titular, ...(p.cuerpo || []), p.cta].filter(Boolean).join(". "));

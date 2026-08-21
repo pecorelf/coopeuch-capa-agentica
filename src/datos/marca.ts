@@ -16,6 +16,7 @@ export const MARCA = {
   // logo-coopeuch.png / .jpg / .svg y si no hay ninguno no dibuja nada.
   nombre: "Coopeuch",
   logo: "/logo-coopeuch.png",
+  sector: "financiero" as string,
 };
 
 export const SET_REGLAS = "cl-cmf-2026.07";

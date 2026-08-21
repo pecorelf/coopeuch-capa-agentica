@@ -7,7 +7,9 @@ import { MARCA as M } from "../datos/marca";
 import { BANDAS, OBJETIVO, escala, type Legibilidad } from "../lib/legibilidad";
 import type { Reaccion } from "../lib/tipos";
 
-const COLOR_VAR: Record<string, string> = { A: "#B9B3AE", B: "#E4032E", C: "#1F5F8B" };
+/* La variante B toma el color de la marca activa; las otras dos son neutros
+   estables para que la comparación se lea igual en cualquier institución. */
+const colorVar = (): Record<string, string> => ({ A: "#B9B3AE", B: M.rojo, C: "#1F5F8B" });
 
 const prom = (rs: Reaccion[], k: keyof Reaccion) =>
   rs?.length ? Math.round(rs.reduce((a, x) => a + (x[k] as number), 0) / rs.length) : 0;
@@ -35,7 +37,7 @@ export function GraficoABC({ reacciones, ganador }: { reacciones: Record<string,
           <Tooltip {...ejeTooltip} />
           <Legend wrapperStyle={{ fontSize: 11 }} />
           {(["A", "B", "C"] as const).map((k) => (
-            <Bar key={k} dataKey={k} fill={COLOR_VAR[k]} opacity={ganador && ganador !== k ? 0.45 : 1} />
+            <Bar key={k} dataKey={k} fill={colorVar()[k]} opacity={ganador && ganador !== k ? 0.45 : 1} />
           ))}
         </BarChart>
       </ResponsiveContainer>
@@ -58,7 +60,7 @@ export function RadarABC({ reacciones }: { reacciones: Record<string, Reaccion[]
           <PolarGrid stroke={M.linea} />
           <PolarAngleAxis dataKey="dim" tick={{ fontSize: 11, fill: M.gris }} />
           {(["A", "B", "C"] as const).map((k) => (
-            <Radar key={k} dataKey={k} stroke={COLOR_VAR[k]} fill={COLOR_VAR[k]} fillOpacity={0.12} strokeWidth={2} />
+            <Radar key={k} dataKey={k} stroke={colorVar()[k]} fill={colorVar()[k]} fillOpacity={0.12} strokeWidth={2} />
           ))}
           <Legend wrapperStyle={{ fontSize: 11 }} />
           <Tooltip {...ejeTooltip} />

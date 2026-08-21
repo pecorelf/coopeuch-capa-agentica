@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MARCA as M } from "../datos/marca";
 import { USUARIOS, useSesion } from "../estado/sesion";
+import { aplicarFavicon } from "../lib/favicon";
 import { INSTITUCIONES } from "../datos/instituciones";
 import { Boton, Etiqueta, Logo } from "../componentes/UI";
 
@@ -19,6 +20,11 @@ export default function Acceso() {
   const [clave, setClave] = useState("");
   const [error, setError] = useState(false);
   const [logoIdx, setLogoIdx] = useState(0);
+
+  useEffect(() => {
+    aplicarFavicon({ nombre: "Deloitte", color: M.tinta });
+    document.title = "Capacidad Agéntica de Marketing · Deloitte Digital";
+  }, []);
 
   const intentar = () => {
     if (entrar(usuario, clave)) return;

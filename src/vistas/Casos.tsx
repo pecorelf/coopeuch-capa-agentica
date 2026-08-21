@@ -18,7 +18,9 @@ import { medirPieza } from "../lib/legibilidad";
 const colorEstado = (e: string) =>
   e === "cumple" ? M.ok : e === "ajustar" ? M.alerta : e === "bloquea" ? M.falla : M.gris;
 const colorVeredicto = (v: string) => (v === "apto" ? M.ok : v === "no apto" ? M.falla : M.alerta);
-const COLOR_VAR: Record<string, string> = { A: "#B9B3AE", B: "#E4032E", C: "#1F5F8B" };
+/* La variante B toma el color de la marca activa; las otras dos son neutros
+   estables para que la comparación se lea igual en cualquier institución. */
+const colorVar = (): Record<string, string> => ({ A: "#B9B3AE", B: M.rojo, C: "#1F5F8B" });
 
 export default function Casos() {
   const { casoId, elegirCaso, etapa, reproduciendo, alternar, avanzar, retroceder, reiniciar, velocidad, setVelocidad, log } = useApp();
@@ -192,9 +194,9 @@ export default function Casos() {
           <div className="grid gap-3 lg:grid-cols-3 xl:gap-4">
             {c.variantes.slice(0, revelar(3)).map((v) => (
               <div key={v.id} className="entra grid gap-2">
-                <div style={{ background: "#fff", border: `1px solid ${M.linea}`, borderTop: `3px solid ${COLOR_VAR[v.id]}`, padding: 12 }}>
+                <div style={{ background: "#fff", border: `1px solid ${M.linea}`, borderTop: `3px solid ${colorVar()[v.id]}`, padding: 12 }}>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono" style={{ fontSize: 13, fontWeight: 700, color: COLOR_VAR[v.id] }}>{v.id}</span>
+                    <span className="font-mono" style={{ fontSize: 13, fontWeight: 700, color: colorVar()[v.id] }}>{v.id}</span>
                     <span style={{ fontSize: 13.5, fontWeight: 600 }}>{v.nombre}</span>
                   </div>
                   <div style={{ fontSize: 12, color: M.gris, marginTop: 4, lineHeight: 1.5 }}>{v.hipotesis}</div>
@@ -214,7 +216,7 @@ export default function Casos() {
               {c.variantes.slice(0, revelar(3)).map((v) => (
                 <div key={v.id} className="entra" style={{ background: "#fff", border: `1px solid ${M.linea}`, borderLeft: `3px solid ${colorVeredicto(v.veredicto)}`, padding: 14, borderRadius: "0 14px 14px 0" }}>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-mono" style={{ fontSize: 12, fontWeight: 700, color: COLOR_VAR[v.id] }}>{v.id}</span>
+                    <span className="font-mono" style={{ fontSize: 12, fontWeight: 700, color: colorVar()[v.id] }}>{v.id}</span>
                     <span style={{ fontSize: 13.5, fontWeight: 600 }}>{v.nombre}</span>
                     <Chip color={colorVeredicto(v.veredicto)}>{v.veredicto}</Chip>
                   </div>
@@ -267,7 +269,7 @@ export default function Casos() {
               <div className="flex gap-2 items-center" style={{ borderBottom: `1px solid ${M.linea}`, paddingBottom: 5 }}>
                 <span style={{ fontSize: 11, color: M.gris, minWidth: 190 }} />
                 {c.variantes.map((v) => (
-                  <span key={v.id} className="font-mono text-center" style={{ fontSize: 10, color: COLOR_VAR[v.id], width: 78, fontWeight: 700 }}>
+                  <span key={v.id} className="font-mono text-center" style={{ fontSize: 10, color: colorVar()[v.id], width: 78, fontWeight: 700 }}>
                     {v.id} {v.nombre}
                   </span>
                 ))}
@@ -284,7 +286,7 @@ export default function Casos() {
                     {vals.map((v, i) => (
                       <span key={i} className="text-center" style={{ width: 78 }}>
                         <span style={{ fontSize: 13, fontWeight: v === max ? 700 : 400, color: v === max ? M.tinta : M.gris }}>{v}%</span>
-                        <Barra valor={v} color={v === max ? COLOR_VAR[c.variantes[i].id] : M.linea} alto={4} />
+                        <Barra valor={v} color={v === max ? colorVar()[c.variantes[i].id] : M.linea} alto={4} />
                       </span>
                     ))}
                   </div>

@@ -74,7 +74,6 @@ export const useSesion = create<Estado>((set, get) => ({
     guardar(LLAVE_INST, id);
     aplicarTema(inst);
     sincronizarConfig(inst);
-    reiniciarCaso?.(inst.sector);
     set({ institucionId: id, inst, tema: get().tema + 1 });
   },
 
@@ -104,6 +103,7 @@ export function aplicarTema(inst: Institucion) {
   MARCA.linea = inst.colores.linea;
   MARCA.nombre = inst.nombre;
   MARCA.logo = inst.logo;
+  MARCA.sector = inst.sector;
 
   if (typeof document !== "undefined") {
     const r = document.documentElement;
@@ -133,13 +133,9 @@ export function registrarConfig(fn: () => ConfigApi) {
   apiConfig = fn;
 }
 
-/* store.ts se registra acá para que al cambiar de institución el caso
-   seleccionado vuelva al primero del sector: los IDs de un sector no existen
-   en el otro y la vista quedaba sin caso. */
-let reiniciarCaso: ((sector: string) => void) | null = null;
-export function registrarCasos(fn: (sector: string) => void) {
-  reiniciarCaso = fn;
-}
+/* El caso seleccionado no se toca desde acá: cada vista resuelve el suyo con
+   los casos de su sector y cae al primero si el ID no existe. Tocar otro store
+   desde éste agregaba acoplamiento sin necesidad. */
 
 function sincronizarConfig(inst: Institucion) {
   if (!apiConfig) return;

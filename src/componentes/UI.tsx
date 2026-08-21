@@ -4,18 +4,19 @@ import { MARCA as M } from "../datos/marca";
 /* El logo lo pone el equipo en /public. Probamos varias grafías porque Windows
    no distingue mayúsculas y Linux sí: un archivo "Logo-Coopeuch.PNG" funciona
    en local y falla en Vercel. Si no hay ninguno, no se dibuja nada. */
-const CANDIDATOS = [
-  "/logo-coopeuch.png", "/logo-coopeuch.jpg", "/logo-coopeuch.jpeg", "/logo-coopeuch.svg", "/logo-coopeuch.webp",
-  "/Logo-Coopeuch.png", "/Logo-Coopeuch.jpg", "/logo-Coopeuch.png", "/LOGO-COOPEUCH.png",
-  "/logo_coopeuch.png", "/logocoopeuch.png", "/coopeuch.png", "/coopeuch.svg",
-  "/logo.png", "/logo.jpg", "/logo.svg",
-];
+/* Alternativas de extensión para el archivo declarado por la institución.
+   Windows no distingue mayúsculas y Linux sí, así que se prueban variantes. */
+function alternativas(src?: string) {
+  if (!src) return ["/logo.png", "/logo.jpg", "/logo.svg"];
+  const base = src.replace(/\.(png|jpe?g|svg|webp)$/i, "");
+  return [src, `${base}.png`, `${base}.jpg`, `${base}.jpeg`, `${base}.svg`, `${base}.webp`, "/logo.png", "/logo.svg"];
+}
 
 export const Logo = ({ alto = 28, src }: { alto?: number; src?: string }) => {
   /* Un archivo cargado en la sesión llega como data URL: se usa tal cual, sin
      probar los nombres de /public. */
   const esEmbebido = Boolean(src && src.startsWith("data:"));
-  const lista = esEmbebido ? [src!] : src ? [src, ...CANDIDATOS] : CANDIDATOS;
+  const lista = esEmbebido ? [src!] : [...new Set(alternativas(src))];
   const [i, setI] = useState(0);
 
   useEffect(() => { setI(0); }, [src]);

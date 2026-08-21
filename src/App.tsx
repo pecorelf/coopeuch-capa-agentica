@@ -12,6 +12,7 @@ import Produccion from "./vistas/Produccion";
 import Acceso from "./vistas/Acceso";
 import Admin from "./vistas/Admin";
 import { useSesion, aplicarTema } from "./estado/sesion";
+import { aplicarFavicon } from "./lib/favicon";
 
 const ESTACIONES = [
   { id: "config", n: "01", nombre: "Configuración", sub: "Fuentes, marca y set de reglas" },
@@ -27,7 +28,11 @@ export default function App() {
   const { autenticado, usuario, salir, inst, tema } = useSesion();
   const c = CASOS.find((x) => x.id === casoId)!;
 
-  useEffect(() => { aplicarTema(inst); }, [inst]);
+  useEffect(() => {
+    aplicarTema(inst);
+    aplicarFavicon({ nombre: inst.nombre, color: inst.colores.rojo, logo: inst.logo });
+    document.title = `Capacidad Agéntica de Marketing · ${inst.nombre}`;
+  }, [inst]);
 
   /* /admin es una ruta aparte: se entra por la URL, no desde el menú.
      El salto va en un efecto: llamar a un setter durante el render provoca un

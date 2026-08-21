@@ -103,7 +103,7 @@ export function VistaWeb({ titulo, bajada, cta, imagen }: { titulo: string; baja
     <div style={{ border: `1px solid ${M.linea}`, background: "#fff", borderRadius: 14, overflow: "hidden" }}>
       <div className="flex items-center gap-2 px-3 py-2" style={{ background: M.niebla, borderBottom: `1px solid ${M.linea}` }}>
         <div className="flex gap-1">
-          {["#E4032E", "#DCD8D3", "#DCD8D3"].map((c, i) => <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: c }} />)}
+          {[M.rojo, M.linea, M.linea].map((c, i) => <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: c }} />)}
         </div>
         <div className="font-mono" style={{ fontSize: 9.5, color: M.gris, background: "#fff", padding: "3px 10px", border: `1px solid ${M.linea}`, flex: 1 }}>
           {inst.dominio || "institucion.cl"} / mi-cuenta
