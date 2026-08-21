@@ -127,6 +127,13 @@ type ConfigApi = {
 };
 let apiConfig: (() => ConfigApi) | null = null;
 
+/* El tema se aplica al cargar el módulo, antes del primer render.
+   Hacerlo solo en un efecto de App llegaba tarde: la primera pintura usaba los
+   colores por defecto y, como MARCA es un objeto mutable, cambiarlo después no
+   provoca un nuevo dibujado. Por eso la interfaz se quedaba con el rojo de
+   Coopeuch aunque la institución activa fuera otra. */
+aplicarTema(institucion(inicial));
+
 /* config.ts se registra acá al cargarse. Evita el import circular: sesion no
    importa config, config avisa que existe. */
 export function registrarConfig(fn: () => ConfigApi) {
