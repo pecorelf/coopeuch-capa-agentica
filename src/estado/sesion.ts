@@ -82,7 +82,11 @@ export const useSesion = create<Estado>((set, get) => ({
     set((s) => {
       const inst = { ...s.inst, ...parcial };
       aplicarTema(inst);
-      sincronizarConfig(inst);
+      /* El contexto y la voz solo se re-sincronizan cuando cambian de verdad:
+         hacerlo en cada edición pisaba lo que el usuario estaba escribiendo. */
+      if (parcial.contexto !== undefined || parcial.voz !== undefined || parcial.vetadas !== undefined) {
+        sincronizarConfig(inst);
+      }
       return { inst, tema: s.tema + 1 };
     }),
 }));

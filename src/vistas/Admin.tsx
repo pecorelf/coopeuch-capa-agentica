@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { MARCA as M } from "../datos/marca";
 import { INSTITUCIONES, type Institucion } from "../datos/instituciones";
 import { useSesion, aplicarTema } from "../estado/sesion";
@@ -12,6 +12,26 @@ import { Cascada } from "../componentes/Animados";
 export default function Admin() {
   const { inst, institucionId, setInstitucion, actualizarInstitucion } = useSesion();
   const [guardado, setGuardado] = useState(false);
+  const [errorLogo, setErrorLogo] = useState("");
+  const archivo = useRef<HTMLInputElement>(null);
+
+  /* Carga de logo desde el equipo. Queda embebido como data URL: sirve para la
+     demostración en curso y no requiere subir nada al servidor. Para que quede
+     permanente, el archivo va a /public y se declara su nombre abajo. */
+  const cargarLogo = (f?: File | null) => {
+    setErrorLogo("");
+    if (!f) return;
+    if (!/^image\/(png|jpeg|jpg|svg\+xml|webp)$/.test(f.type)) {
+      return setErrorLogo("Formato no admitido. Use PNG, JPG, SVG o WEBP.");
+    }
+    if (f.size > 1_500_000) {
+      return setErrorLogo("El archivo pesa más de 1,5 MB. Conviene uno más liviano.");
+    }
+    const lector = new FileReader();
+    lector.onload = () => actualizarInstitucion({ logo: String(lector.result) });
+    lector.onerror = () => setErrorLogo("No se pudo leer el archivo.");
+    lector.readAsDataURL(f);
+  };
 
   const cambiarColor = (k: keyof Institucion["colores"], v: string) => {
     const colores = { ...inst.colores, [k]: v };
@@ -78,12 +98,39 @@ export default function Admin() {
 
       <div className="grid gap-4 xl:grid-cols-3 items-start">
         <Panel titulo="Marca" acento={inst.colores.rojo}>
-          <div className="flex items-center gap-3 mb-4" style={{ background: M.niebla, borderRadius: 12, padding: 12 }}>
-            <Logo alto={26} src={inst.logo} />
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 600 }}>{inst.nombre}</div>
-              <div className="font-mono" style={{ fontSize: 9.5, color: M.gris }}>{inst.logo}</div>
+          <div className="flex items-center gap-3 mb-3" style={{ background: M.niebla, borderRadius: 12, padding: 12 }}>
+            <div style={{ background: "#fff", borderRadius: 8, padding: "7px 10px", display: "flex", alignItems: "center", minWidth: 96, justifyContent: "center" }}>
+              <Logo alto={26} src={inst.logo} />
             </div>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: 13, fontWeight: 600 }}>{inst.nombre}</div>
+              <div className="font-mono" style={{ fontSize: 9.5, color: M.gris, wordBreak: "break-all" }}>
+                {inst.logo.startsWith("data:") ? "archivo cargado en esta sesión" : inst.logo}
+              </div>
+            </div>
+          </div>
+
+          <input
+            ref={archivo}
+            type="file"
+            accept="image/png,image/jpeg,image/svg+xml,image/webp"
+            style={{ display: "none" }}
+            onChange={(e) => { cargarLogo(e.target.files?.[0]); e.currentTarget.value = ""; }}
+          />
+          <div className="flex gap-2 flex-wrap mb-1">
+            <Boton tam="chico" variante="secundario" icono="↑" onClick={() => archivo.current?.click()}>
+              Cargar logo
+            </Boton>
+            {inst.logo.startsWith("data:") && (
+              <Boton tam="chico" variante="fantasma" onClick={() => actualizarInstitucion({ logo: `/logo-${inst.id}.png` })}>
+                Volver al archivo
+              </Boton>
+            )}
+          </div>
+          {errorLogo && <div style={{ fontSize: 11, color: M.falla, marginBottom: 6 }}>{errorLogo}</div>}
+          <div style={{ fontSize: 10.5, color: M.gris, marginBottom: 12, lineHeight: 1.5 }}>
+            El logo cargado vive solo en esta sesión del navegador. Para dejarlo permanente, el archivo va en la carpeta
+            <span className="font-mono"> /public </span> del proyecto y se declara su nombre acá abajo.
           </div>
 
           <Campo etiqueta="Nombre" valor={inst.nombre} onChange={(v: string) => actualizarInstitucion({ nombre: v })} />
@@ -103,7 +150,11 @@ export default function Admin() {
                 <input type="color" value={inst.colores[k]} onChange={(e) => cambiarColor(k, e.target.value)}
                   style={{ width: 34, height: 30, border: `1px solid ${M.linea}`, borderRadius: 8, background: "#fff", cursor: "pointer", padding: 2 }} />
                 <span style={{ fontSize: 12, flex: 1 }}>{n}</span>
-                <input value={inst.colores[k]} onChange={(e) => cambiarColor(k, e.target.value)}
+                <input
+                  defaultValue={inst.colores[k]}
+                  key={inst.id + k + inst.colores[k]}
+                  onBlur={(e) => { const v = e.target.value.trim(); if (/^#[0-9a-fA-F]{6}$/.test(v)) cambiarColor(k, v); else e.target.value = inst.colores[k]; }}
+                  onKeyDown={(e) => { if (e.key === "Enter") (e.target as any).blur(); }}
                   className="campo font-mono" style={{ fontSize: 11, padding: "5px 9px", border: `1px solid ${M.linea}`, borderRadius: 8, width: 96 }} />
               </div>
             ))}

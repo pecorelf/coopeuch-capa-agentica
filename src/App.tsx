@@ -24,19 +24,25 @@ const ESTACIONES = [
 
 export default function App() {
   const { vista, irA, casoId, etapa, reproduciendo } = useApp();
-  const { autenticado, usuario, salir, inst, institucionId, tema } = useSesion();
+  const { autenticado, usuario, salir, inst, tema } = useSesion();
   const c = CASOS.find((x) => x.id === casoId)!;
 
   useEffect(() => { aplicarTema(inst); }, [inst]);
 
-  /* /admin es una ruta aparte: se entra por la URL, no desde el menú. */
-  const esAdmin = typeof window !== "undefined" && window.location.pathname.replace(/\/$/, "").endsWith("/admin");
+  /* /admin es una ruta aparte: se entra por la URL, no desde el menú.
+     El salto va en un efecto: llamar a un setter durante el render provoca un
+     bucle y deja la pantalla en blanco. */
+  useEffect(() => {
+    const esAdmin = typeof window !== "undefined" && window.location.pathname.replace(/\/$/, "").endsWith("/admin");
+    if (esAdmin && vista !== "admin") irA("admin");
+  }, []);
 
   if (!autenticado) return <Acceso />;
-  if (esAdmin && vista !== "admin") irA("admin");
 
+  /* Sin key de remontaje: el árbol se vuelve a renderizar solo porque App está
+     suscrita a la sesión. Remontar borraba el foco en cada tecla. */
   return (
-    <div key={`${institucionId}-${tema}`} className="min-h-screen flex flex-col" style={{ background: M.niebla }}>
+    <div className="min-h-screen flex flex-col" style={{ background: M.niebla }}>
       {/* Cabecera */}
       <header style={{ background: "#fff", borderBottom: `1px solid ${M.linea}` }}>
         <div className="flex items-center justify-between px-5 py-3.5 gap-4 flex-wrap">

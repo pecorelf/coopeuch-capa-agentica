@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MARCA as M } from "../datos/marca";
 
 /* El logo lo pone el equipo en /public. Probamos varias grafías porque Windows
@@ -12,10 +12,16 @@ const CANDIDATOS = [
 ];
 
 export const Logo = ({ alto = 28, src }: { alto?: number; src?: string }) => {
-  const lista = src ? [src, ...CANDIDATOS] : CANDIDATOS;
+  /* Un archivo cargado en la sesión llega como data URL: se usa tal cual, sin
+     probar los nombres de /public. */
+  const esEmbebido = Boolean(src && src.startsWith("data:"));
+  const lista = esEmbebido ? [src!] : src ? [src, ...CANDIDATOS] : CANDIDATOS;
   const [i, setI] = useState(0);
+
+  useEffect(() => { setI(0); }, [src]);
+
   if (i >= lista.length) return null;
-  return <img src={lista[i]} alt="" style={{ height: alto, width: "auto" }} onError={() => setI(i + 1)} />;
+  return <img src={lista[i]} alt="" style={{ height: alto, width: "auto" }} onError={() => setI((n) => n + 1)} />;
 };
 
 export const Etiqueta = ({ children, color = M.gris }: any) => (
@@ -159,22 +165,55 @@ export const Modal = ({ abierto, onCerrar, titulo, subtitulo, ancho = 760, child
   );
 };
 
-export const Campo = ({ etiqueta, valor, onChange, filas = 1, placeholder, mono = false, ayuda }: any) => (
-  <div className="mb-3">
-    {etiqueta && <Etiqueta color={M.tinta}>{etiqueta}</Etiqueta>}
-    {filas > 1 ? (
-      <textarea
-        value={valor} rows={filas} placeholder={placeholder} onChange={(e) => onChange(e.target.value)}
-        className={`campo mt-1.5 w-full ${mono ? "font-mono" : ""}`}
-        style={{ fontSize: 12.5, padding: "9px 11px", border: `1px solid ${M.linea}`, borderRadius: 10, resize: "vertical", lineHeight: 1.65, background: "#fff" }}
-      />
-    ) : (
-      <input
-        value={valor} placeholder={placeholder} onChange={(e) => onChange(e.target.value)}
-        className={`campo mt-1.5 w-full ${mono ? "font-mono" : ""}`}
-        style={{ fontSize: 12.5, padding: "9px 11px", border: `1px solid ${M.linea}`, borderRadius: 10, background: "#fff" }}
-      />
-    )}
-    {ayuda && <div style={{ fontSize: 10.5, color: M.gris, marginTop: 4, lineHeight: 1.5 }}>{ayuda}</div>}
-  </div>
-);
+/* Campo con borrador local.
+   Escribe en estado propio y avisa al salir del campo o con Enter. Propagar en
+   cada tecla obliga al árbol a re-renderizarse mientras se escribe, y ahí es
+   donde se perdía el foco. */
+export const Campo = ({ etiqueta, valor, onChange, filas = 1, placeholder, mono = false, ayuda, alEscribir = false }: any) => {
+  const [borrador, setBorrador] = useState(valor ?? "");
+  const [editando, setEditando] = useState(false);
+
+  useEffect(() => {
+    if (!editando) setBorrador(valor ?? "");
+  }, [valor, editando]);
+
+  const confirmar = () => {
+    setEditando(false);
+    if (borrador !== valor) onChange(borrador);
+  };
+
+  const comun = {
+    value: borrador,
+    placeholder,
+    onFocus: () => setEditando(true),
+    onChange: (e: any) => {
+      setBorrador(e.target.value);
+      if (alEscribir) onChange(e.target.value);
+    },
+    onBlur: confirmar,
+    className: `campo mt-1.5 w-full ${mono ? "font-mono" : ""}`,
+  };
+
+  return (
+    <div className="mb-3">
+      {etiqueta && <Etiqueta color={M.tinta}>{etiqueta}</Etiqueta>}
+      {filas > 1 ? (
+        <textarea
+          {...comun} rows={filas}
+          onKeyDown={(e) => { if (e.key === "Escape") { setBorrador(valor ?? ""); setEditando(false); (e.target as any).blur(); } }}
+          style={{ fontSize: 12.5, padding: "9px 11px", border: `1px solid ${M.linea}`, borderRadius: 10, resize: "vertical", lineHeight: 1.65, background: "#fff" }}
+        />
+      ) : (
+        <input
+          {...comun}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") confirmar();
+            if (e.key === "Escape") { setBorrador(valor ?? ""); setEditando(false); (e.target as any).blur(); }
+          }}
+          style={{ fontSize: 12.5, padding: "9px 11px", border: `1px solid ${M.linea}`, borderRadius: 10, background: "#fff" }}
+        />
+      )}
+      {ayuda && <div style={{ fontSize: 10.5, color: M.gris, marginTop: 4, lineHeight: 1.5 }}>{ayuda}</div>}
+    </div>
+  );
+};
